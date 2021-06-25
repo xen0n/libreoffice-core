@@ -448,4 +448,20 @@ void SAL_CALL DNDListenerContainer::dropComplete( sal_Bool success )
     }
 }
 
+/*
+ *  GenericDropTargetDragContext
+ */
+
+GenericDropTargetDragContext::GenericDropTargetDragContext()
+{
+}
+
+void GenericDropTargetDragContext::acceptDrag( sal_Int8 /*dragOperation*/ )
+{
+}
+
+void GenericDropTargetDragContext::rejectDrag()
+{
+}
+
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
