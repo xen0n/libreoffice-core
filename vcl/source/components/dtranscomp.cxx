@@ -210,6 +210,8 @@ class GenericDragSource : public cppu::WeakComponentImplHelper<
             >
 {
     osl::Mutex                          m_aMutex;
+    css::uno::Reference<css::datatransfer::XTransferable> m_xTrans;
+    css::uno::Reference<css::datatransfer::dnd::XDragSourceListener> m_xListener;
 public:
     GenericDragSource() : WeakComponentImplHelper( m_aMutex ) {}
 
@@ -255,10 +257,16 @@ sal_Int32 GenericDragSource::getDefaultCursor( sal_Int8 )
 
 void GenericDragSource::startDrag( const datatransfer::dnd::DragGestureEvent&,
                                    sal_Int8 /*sourceActions*/, sal_Int32 /*cursor*/, sal_Int32 /*image*/,
-                                   const Reference< datatransfer::XTransferable >&,
+                                   const Reference< datatransfer::XTransferable >& rTrans,
                                    const Reference< datatransfer::dnd::XDragSourceListener >& listener
                                    )
 {
+    if (comphelper::LibreOfficeKit::isActive()) {
+        m_xTrans = rTrans;
+        m_xListener = listener;
+        return;
+    }
+
     datatransfer::dnd::DragSourceDropEvent aEv;
     aEv.DropAction = datatransfer::dnd::DNDConstants::ACTION_COPY;
     aEv.DropSuccess = false;
