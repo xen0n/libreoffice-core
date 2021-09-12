@@ -29,17 +29,6 @@
 
 #include <vcl/unohelp2.hxx>
 
-class GenericDropTargetDragContext :
-    public ::cppu::WeakImplHelper<css::datatransfer::dnd::XDropTargetDragContext>
-{
-public:
-    GenericDropTargetDragContext();
-
-    // XDropTargetDragContext
-    virtual void SAL_CALL acceptDrag( sal_Int8 dragOperation ) override;
-    virtual void SAL_CALL rejectDrag() override;
-};
-
 class DNDListenerContainer final : public vcl::unohelper::MutexHelper,
                                 public ::cppu::WeakComponentImplHelper<
     css::datatransfer::dnd::XDragGestureRecognizer,

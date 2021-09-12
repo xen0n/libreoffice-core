@@ -258,7 +258,7 @@ sal_uInt32 DNDListenerContainer::fireDragEnterEvent( const Reference< XDropTarge
     // fire DropTargetDropEvent on all XDropTargetListeners
     OInterfaceContainerHelper *pContainer = rBHelper.getContainer( cppu::UnoType<XDropTargetListener>::get());
 
-    if( pContainer && m_bActive )
+    if( pContainer /*&& m_bActive*/ )
     {
         OInterfaceIteratorHelper aIterator( *pContainer );
 
@@ -446,22 +446,6 @@ void SAL_CALL DNDListenerContainer::dropComplete( sal_Bool success )
         m_xDropTargetDropContext->dropComplete( success );
         m_xDropTargetDropContext.clear();
     }
-}
-
-/*
- *  GenericDropTargetDragContext
- */
-
-GenericDropTargetDragContext::GenericDropTargetDragContext()
-{
-}
-
-void GenericDropTargetDragContext::acceptDrag( sal_Int8 /*dragOperation*/ )
-{
-}
-
-void GenericDropTargetDragContext::rejectDrag()
-{
 }
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

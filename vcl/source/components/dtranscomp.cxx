@@ -25,6 +25,7 @@
 #include <tools/debug.hxx>
 #include <vcl/svapp.hxx>
 
+#include <dndlistenercontainer.hxx>
 #include <factory.hxx>
 #include <svdata.hxx>
 #include <salinst.hxx>
@@ -51,7 +52,6 @@ using namespace com::sun::star::lang;
 namespace vcl
 {
 namespace {
-
 class GenericDropTarget : public cppu::WeakComponentImplHelper<
                                            datatransfer::dnd::XDropTarget,
                                            XInitialization,
@@ -100,6 +100,72 @@ public:
     {
       return { "com.sun.star.datatransfer.dnd.GenericDropTarget" };
     }
+};
+
+/*
+*   generic DragSource dummy
+*/
+class GenericDragSource : public cppu::WeakComponentImplHelper<
+            datatransfer::dnd::XDragSource,
+            XInitialization,
+            css::lang::XServiceInfo
+            >
+{
+    osl::Mutex                          m_aMutex;
+    css::uno::Reference<css::datatransfer::XTransferable> m_xTrans;
+    css::uno::Reference<css::datatransfer::dnd::XDragSourceListener> m_xListener;
+    std::vector<GenericDropTarget*> m_pTarget;
+public:
+    GenericDragSource() : WeakComponentImplHelper( m_aMutex ) {}
+
+    static GenericDragSource& get( const OUString& rDisplayName );
+
+    void registerDropTarget( /*::Window aXLIB_Window,*/ GenericDropTarget* pTarget );
+
+    void accept( sal_Int8 dragOperation );
+
+    // XDragSource
+    virtual sal_Bool    SAL_CALL isDragImageSupported() override;
+    virtual sal_Int32   SAL_CALL getDefaultCursor( sal_Int8 dragAction ) override;
+    virtual void        SAL_CALL startDrag(
+                                     const datatransfer::dnd::DragGestureEvent& trigger,
+                                     sal_Int8 sourceActions, sal_Int32 cursor, sal_Int32 image,
+                                     const Reference< datatransfer::XTransferable >& transferable,
+                                     const Reference< datatransfer::dnd::XDragSourceListener >& listener
+                                     ) override;
+
+    // XInitialization
+    virtual void        SAL_CALL initialize( const Sequence< Any >& arguments ) override;
+
+    OUString SAL_CALL getImplementationName() override
+    { return "com.sun.star.datatransfer.dnd.VclGenericDragSource"; }
+
+    sal_Bool SAL_CALL supportsService(OUString const & ServiceName) override
+    { return cppu::supportsService(this, ServiceName); }
+
+    css::uno::Sequence<OUString> SAL_CALL getSupportedServiceNames() override
+    { return getSupportedServiceNames_static(); }
+
+    static Sequence< OUString > getSupportedServiceNames_static()
+    {
+       return { "com.sun.star.datatransfer.dnd.GenericDragSource" };
+    }
+
+private:
+    static std::unordered_map< OUString, GenericDragSource* >& getInstances();
+};
+
+class GenericDropTargetDragContext :
+    public ::cppu::WeakImplHelper<css::datatransfer::dnd::XDropTargetDragContext>
+{
+    GenericDragSource* m_pDragSource;
+
+public:
+    GenericDropTargetDragContext(GenericDragSource* pDragSource);
+
+    // XDropTargetDragContext
+    virtual void SAL_CALL acceptDrag( sal_Int8 dragOperation ) override;
+    virtual void SAL_CALL rejectDrag() override;
 };
 
 // generic implementation to satisfy SalInstance
@@ -160,6 +226,20 @@ public:
         const Reference< css::datatransfer::clipboard::XClipboardListener >& listener ) override;
 };
 
+}
+
+GenericDropTargetDragContext::GenericDropTargetDragContext(GenericDragSource* pDragSource)
+: m_pDragSource(pDragSource)
+{
+}
+
+void GenericDropTargetDragContext::acceptDrag( sal_Int8 dragOperation )
+{
+    m_pDragSource->accept( dragOperation );
+}
+
+void GenericDropTargetDragContext::rejectDrag()
+{
 }
 
 Sequence< OUString > GenericClipboard::getSupportedServiceNames_static()
@@ -249,61 +329,6 @@ vcl_SystemClipboard_get_implementation(
     return xClipboard.get();
 }
 
-namespace {
-
-/*
-*   generic DragSource dummy
-*/
-class GenericDragSource : public cppu::WeakComponentImplHelper<
-            datatransfer::dnd::XDragSource,
-            XInitialization,
-            css::lang::XServiceInfo
-            >
-{
-    osl::Mutex                          m_aMutex;
-    css::uno::Reference<css::datatransfer::XTransferable> m_xTrans;
-    css::uno::Reference<css::datatransfer::dnd::XDragSourceListener> m_xListener;
-    GenericDropTarget* m_pTarget;
-public:
-    GenericDragSource() : WeakComponentImplHelper( m_aMutex ) {}
-
-    static GenericDragSource& get( const OUString& rDisplayName );
-
-    void registerDropTarget( /*::Window aXLIB_Window,*/ GenericDropTarget* pTarget );
-
-    // XDragSource
-    virtual sal_Bool    SAL_CALL isDragImageSupported() override;
-    virtual sal_Int32   SAL_CALL getDefaultCursor( sal_Int8 dragAction ) override;
-    virtual void        SAL_CALL startDrag(
-                                     const datatransfer::dnd::DragGestureEvent& trigger,
-                                     sal_Int8 sourceActions, sal_Int32 cursor, sal_Int32 image,
-                                     const Reference< datatransfer::XTransferable >& transferable,
-                                     const Reference< datatransfer::dnd::XDragSourceListener >& listener
-                                     ) override;
-
-    // XInitialization
-    virtual void        SAL_CALL initialize( const Sequence< Any >& arguments ) override;
-
-    OUString SAL_CALL getImplementationName() override
-    { return "com.sun.star.datatransfer.dnd.VclGenericDragSource"; }
-
-    sal_Bool SAL_CALL supportsService(OUString const & ServiceName) override
-    { return cppu::supportsService(this, ServiceName); }
-
-    css::uno::Sequence<OUString> SAL_CALL getSupportedServiceNames() override
-    { return getSupportedServiceNames_static(); }
-
-    static Sequence< OUString > getSupportedServiceNames_static()
-    {
-       return { "com.sun.star.datatransfer.dnd.GenericDragSource" };
-    }
-
-private:
-    static std::unordered_map< OUString, GenericDragSource* >& getInstances();
-};
-
-}
-
 std::unordered_map< OUString, GenericDragSource* >& GenericDragSource::getInstances()
 {
     static std::unordered_map< OUString, GenericDragSource* > aInstances;
@@ -331,7 +356,7 @@ GenericDragSource& GenericDragSource::get( const OUString& rDisplayName )
 
 void GenericDragSource::registerDropTarget( /*::Window aXLIB_Window,*/ GenericDropTarget* pTarget )
 {
-    m_pTarget = pTarget;
+    m_pTarget.push_back(pTarget);
 }
 
 sal_Bool GenericDragSource::isDragImageSupported()
@@ -342,6 +367,41 @@ sal_Bool GenericDragSource::isDragImageSupported()
 sal_Int32 GenericDragSource::getDefaultCursor( sal_Int8 )
 {
     return 0;
+}
+
+void GenericDragSource::accept( sal_Int8 dragOperation )
+{
+    if( m_xListener.is() )
+    {
+        sal_Int8 nNewDragAction;
+        if( dragOperation & datatransfer::dnd::DNDConstants::ACTION_MOVE )
+            nNewDragAction = datatransfer::dnd::DNDConstants::ACTION_MOVE;
+        else if( dragOperation & datatransfer::dnd::DNDConstants::ACTION_COPY )
+            nNewDragAction = datatransfer::dnd::DNDConstants::ACTION_COPY;
+        else if( dragOperation & datatransfer::dnd::DNDConstants::ACTION_LINK )
+            nNewDragAction = datatransfer::dnd::DNDConstants::ACTION_LINK;
+        else
+            nNewDragAction = datatransfer::dnd::DNDConstants::ACTION_NONE;
+        //nNewDragAction &= m_nSourceActions;
+
+        // if( nNewDragAction != m_nTargetAcceptAction )
+        // {
+        //     setCursor( getDefaultCursor( nNewDragAction ), m_aDropWindow );
+        //     m_nTargetAcceptAction = nNewDragAction;
+        // }
+
+        com::sun::star::datatransfer::dnd::DragSourceDragEvent dsde;
+        dsde.Source             = static_cast< OWeakObject* >(this);
+        //dsde.DragSourceContext  = new DragSourceContext( m_aDropWindow, *this );
+        dsde.DragSource         = static_cast< XDragSource* >(this);
+        dsde.DropAction         = datatransfer::dnd::DNDConstants::ACTION_NONE;//m_nSourceActions;
+        dsde.UserAction         = datatransfer::dnd::DNDConstants::ACTION_NONE;//getUserDragAction();
+
+        css::uno::Reference< com::sun::star::datatransfer::dnd::XDragSourceListener > xListener( m_xListener );
+        // caution: do not change anything after this
+        if( xListener.is() )
+            xListener->dragOver( dsde );
+    }
 }
 
 void GenericDragSource::startDrag( const datatransfer::dnd::DragGestureEvent& event,
@@ -357,17 +417,17 @@ void GenericDragSource::startDrag( const datatransfer::dnd::DragGestureEvent& ev
         // m_pTarget
         // updateDragWindow( root_x, root_y, aRoot );
 
-        if( m_pTarget )
+        for(auto pTarget : m_pTarget)
         {
             com::sun::star::datatransfer::dnd::DropTargetDragEnterEvent dtde;
-            dtde.Source                 = static_cast< OWeakObject* >( m_pTarget );
-            //dtde.Context                = new DropTargetDragContext( m_aCurrentDropWindow, *this );
-            dtde.LocationX              = 10;//nWinX;
-            dtde.LocationY              = 10;//nWinY;
-            dtde.DropAction             = datatransfer::dnd::DNDConstants::ACTION_COPY;
+            dtde.Source                 = static_cast< OWeakObject* >( pTarget );
+            dtde.Context                = new GenericDropTargetDragContext( this );
+            dtde.LocationX              = event.DragOriginX;
+            dtde.LocationY              = event.DragOriginY;
+            dtde.DropAction             = datatransfer::dnd::DNDConstants::ACTION_COPY; //??
             dtde.SourceActions          = datatransfer::dnd::DNDConstants::ACTION_COPY;
             dtde.SupportedDataFlavors   = rTrans->getTransferDataFlavors();
-            m_pTarget->dragEnter( dtde );
+            pTarget->dragEnter( dtde );
         }
 
         return;
