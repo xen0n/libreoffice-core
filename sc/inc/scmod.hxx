@@ -139,6 +139,7 @@ public:
     void                AnythingChanged();
 
     //  Drag & Drop:
+    // global grag and drop
     const ScDragData&   GetDragData() const { return *m_pDragData;}
     void                SetDragObject( ScTransferObj* pCellObj, ScDrawTransferObj* pDrawObj );
     void                ResetDragObject();
