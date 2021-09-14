@@ -6495,7 +6495,7 @@ void ScGridWindow::UpdateDragRectOverlay()
         // #i70788# get the OverlayManager safely
         rtl::Reference<sdr::overlay::OverlayManager> xOverlayManager = getOverlayManager();
 
-        if (xOverlayManager.is() && !comphelper::LibreOfficeKit::isActive())
+        if (xOverlayManager.is())// && !comphelper::LibreOfficeKit::isActive())
         {
             std::vector< basegfx::B2DRange > aRanges;
             const basegfx::B2DHomMatrix aTransform(GetInverseViewTransformation());
