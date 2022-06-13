@@ -24,6 +24,7 @@
 #include <svl/undo.hxx>
 #include <svx/svddrag.hxx>
 #include <svx/svdlayer.hxx>
+#include <svx/sdr/view/ViewChangeHint.hxx>
 #include <svtools/colorcfg.hxx>
 #include <svl/itemset.hxx>
 #include <svx/svxdllapi.h>
@@ -68,13 +69,6 @@ namespace sdr::contact { class ViewObjectContactRedirector; }
 namespace vcl {
     class Window;
 }
-
-
-class SvxViewChangedHint final : public SfxHint
-{
-public:
-    explicit SvxViewChangedHint();
-};
 
 class SdrPaintWindow;
 
