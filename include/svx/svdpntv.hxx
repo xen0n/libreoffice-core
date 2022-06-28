@@ -38,9 +38,7 @@
 // Pre defines
 class SdrPageWindow;
 
-namespace com::sun::star::awt {
-    class XControlContainer;
-}
+namespace com::sun::star::awt { class XControlContainer; }
 namespace sdr::overlay { class OverlayManager; }
 
 class SdrPage;
@@ -51,10 +49,10 @@ class SdrOle2Obj;
 class SdrModel;
 class SdrObject;
 enum class GraphicManagerDrawFlags;
-
-namespace sdr::contact {
-    class ViewObjectContactRedirector;
-}
+class SdrPaintView;
+namespace sdr::contact { class ViewObjectContactRedirector; }
+namespace vcl { class Window; }
+class SdrPaintWindow;
 
 // Defines for AnimationMode
 enum class SdrAnimationMode
@@ -62,15 +60,6 @@ enum class SdrAnimationMode
     Animate,
     Disable
 };
-
-class SdrPaintView;
-namespace sdr::contact { class ViewObjectContactRedirector; }
-
-namespace vcl {
-    class Window;
-}
-
-class SdrPaintWindow;
 
 /**
  * Helper to convert any GDIMetaFile to a good quality BitmapEx,
