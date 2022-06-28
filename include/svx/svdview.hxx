@@ -26,6 +26,7 @@
 #include <svtools/accessibilityoptions.hxx>
 #include <svx/svxdllapi.h>
 #include <svx/sdr/view/Enums.hxx>
+#include <svx/sdr/view/ViewEvent.hxx>
 #include <svx/svdcrtv.hxx>
 #include <vcl/event.hxx>
 #include <unotools/options.hxx>
@@ -49,40 +50,7 @@
 //         SdrCreateView   CrtV   Action
 //         SdrView         View
 
-class SvxURLField;
 namespace sdr::contact { class ObjectContact; }
-
-// helper class SdrViewEvent
-struct SVXCORE_DLLPUBLIC SdrViewEvent
-{
-    SdrHdl* mpHdl;
-    SdrObject* mpObj;
-    SdrObject* mpRootObj; // mark this when SdrBeginTextEdit is executed
-    SdrPageView* mpPV;
-    const SvxURLField* mpURLField;
-
-    Point maLogicPos;
-    SdrHitKind meHit;
-    SdrEventKind meEvent;
-
-    sal_uInt16 mnMouseClicks;
-    MouseEventModifiers mnMouseMode;
-    sal_uInt16 mnMouseCode;
-    sal_uInt16 mnHlplIdx;
-    sal_uInt16 mnGlueId;
-
-    bool mbMouseDown : 1;
-    bool mbMouseUp : 1;
-    bool mbIsAction : 1;       // Action is active
-    bool mbIsTextEdit : 1;     // TextEdit runs currently
-    bool mbAddMark : 1;
-    bool mbUnmark : 1;
-    bool mbPrevNextMark : 1;
-    bool mbMarkPrev : 1;
-
-public:
-    SdrViewEvent();
-};
 
 // helper class for all D&D overlays
 class SVXCORE_DLLPUBLIC SdrDropMarkerOverlay

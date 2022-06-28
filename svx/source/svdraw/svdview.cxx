@@ -46,35 +46,11 @@
 #include <drawinglayer/primitive2d/drawinglayer_primitivetypes2d.hxx>
 #include <drawinglayer/primitive2d/texthierarchyprimitive2d.hxx>
 #include <svx/sdr/contact/objectcontactofpageview.hxx>
+#include <svx/sdr/view/ViewEvent.hxx>
 #include <sal/log.hxx>
 #include <vcl/ptrstyle.hxx>
 #include <vcl/window.hxx>
 #include <comphelper/lok.hxx>
-
-
-SdrViewEvent::SdrViewEvent()
-    : mpHdl(nullptr),
-      mpObj(nullptr),
-      mpRootObj(nullptr),
-      mpPV(nullptr),
-      mpURLField(nullptr),
-      meHit(SdrHitKind::NONE),
-      meEvent(SdrEventKind::NONE),
-      mnMouseClicks(0),
-      mnMouseMode(MouseEventModifiers::NONE),
-      mnMouseCode(0),
-      mnHlplIdx(0),
-      mnGlueId(0),
-      mbMouseDown(false),
-      mbMouseUp(false),
-      mbIsAction(false),
-      mbIsTextEdit(false),
-      mbAddMark(false),
-      mbUnmark(false),
-      mbPrevNextMark(false),
-      mbMarkPrev(false)
-{
-}
 
 // helper class for all D&D overlays
 
