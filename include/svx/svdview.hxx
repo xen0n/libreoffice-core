@@ -25,6 +25,7 @@
 #include <tools/weakbase.h>
 #include <svtools/accessibilityoptions.hxx>
 #include <svx/svxdllapi.h>
+#include <svx/sdr/view/Enums.hxx>
 #include <svx/svdcrtv.hxx>
 #include <vcl/event.hxx>
 #include <unotools/options.hxx>
@@ -50,48 +51,6 @@
 
 class SvxURLField;
 namespace sdr::contact { class ObjectContact; }
-
-enum class SdrViewContext {
-    Standard,
-    PointEdit,
-    GluePointEdit,
-    Graphic,
-    Media,
-    Table
-};
-
-enum class SdrEventKind {
-    NONE,
-    TextEdit,
-    MoveAction,
-    EndAction,
-    BackAction,
-    EndCreate,
-    EndDrag,
-    MarkObj,
-    MarkPoint,
-    MarkGluePoint,
-    BeginMark,
-    BeginInsertObjPoint,
-    EndInsertObjPoint,
-    BeginInsertGluePoint,
-    BeginDragHelpline,
-    BeginDragObj,
-    BeginCreateObj,
-    BeginMacroObj,
-    BeginTextEdit,
-    EndMark,
-    BrkMark,
-    ExecuteUrl
-};
-
-/* for PickAnything() */
-enum class SdrMouseEventKind
-{
-    BUTTONDOWN = 1,
-    MOVE       = 2,
-    BUTTONUP   = 3,
-};
 
 // helper class SdrViewEvent
 struct SVXCORE_DLLPUBLIC SdrViewEvent
