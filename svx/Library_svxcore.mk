@@ -463,6 +463,7 @@ $(eval $(call gb_Library_add_exception_objects,svxcore,\
     svx/source/unodraw/unoshtxt \
     svx/source/unodraw/unottabl \
     svx/source/unodraw/XPropertyTable \
+    svx/source/view/DropMarkerOverlay \
     svx/source/xml/xmleohlp \
     svx/source/xml/xmlexport \
     svx/source/xml/xmlgrhlp \

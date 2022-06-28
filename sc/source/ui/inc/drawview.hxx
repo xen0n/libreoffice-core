@@ -22,6 +22,7 @@
 #include <svx/fmview.hxx>
 
 #include <global.hxx>
+#include <svx/sdr/view/DropMarkerOverlay.hxx>
 
 namespace com::sun::star::datatransfer { class XTransferable; }
 

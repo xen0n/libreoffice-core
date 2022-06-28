@@ -43,6 +43,7 @@
 #include <svx/svdpage.hxx>
 #include <svx/svdpagv.hxx>
 #include <svx/dialmgr.hxx>
+#include <svx/sdr/view/DropMarkerOverlay.hxx>
 #include <tools/globname.hxx>
 #include <sot/exchange.hxx>
 #include <IDocumentDrawModelAccess.hxx>

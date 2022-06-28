@@ -18,6 +18,7 @@
  */
 
 #include <svx/svdobj.hxx>
+#include <svx/sdr/view/DropMarkerOverlay.hxx>
 #include <osl/diagnose.h>
 #include <comphelper/lok.hxx>
 #include <init.hxx>

@@ -18,6 +18,7 @@
  */
 
 #include <svx/svdview.hxx>
+#include <svx/sdr/view/DropMarkerOverlay.hxx>
 #include <editeng/outliner.hxx>
 #include <svx/svdobj.hxx>
 #include <sot/exchange.hxx>

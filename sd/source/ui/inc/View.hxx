@@ -26,6 +26,7 @@
 #include <svx/fmview.hxx>
 #include <svx/svdpage.hxx>
 #include <vcl/idle.hxx>
+#include <svx/sdr/view/DropMarkerOverlay.hxx>
 
 #include "smarttag.hxx"
 #include "fusearch.hxx"

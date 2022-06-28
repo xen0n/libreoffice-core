@@ -52,24 +52,6 @@
 
 namespace sdr::contact { class ObjectContact; }
 
-// helper class for all D&D overlays
-class SVXCORE_DLLPUBLIC SdrDropMarkerOverlay
-{
-    // The OverlayObjects
-    sdr::overlay::OverlayObjectList maObjects;
-
-    void ImplCreateOverlays(
-        const SdrView& rView,
-        const basegfx::B2DPolyPolygon& rLinePolyPolygon);
-
-public:
-    SdrDropMarkerOverlay(const SdrView& rView, const SdrObject& rObject);
-    SdrDropMarkerOverlay(const SdrView& rView, const tools::Rectangle& rRectangle);
-    SdrDropMarkerOverlay(const SdrView& rView, const Point& rStart, const Point& rEnd);
-    ~SdrDropMarkerOverlay();
-};
-
-
 class SVXCORE_DLLPUBLIC SdrView : public SdrCreateView, public tools::WeakBase
 {
     friend class SdrPageView;
